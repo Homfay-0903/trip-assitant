@@ -9,8 +9,7 @@
                             <el-input class="input-item" v-model="loginForm.account" placeholder="使用邮箱或者手机号" />
                         </el-form-item>
                         <el-form-item class="password form-item" prop="password">
-                            <el-input class="input-item" v-model="loginForm.password" style="width: 240px"
-                                placeholder="使用邮箱或者手机号" />
+                            <el-input class="input-item" v-model="loginForm.password" placeholder="使用邮箱或者手机号" />
                         </el-form-item>
                     </el-form>
                     <el-button class="login-btn" @click="Login">登 录</el-button>
@@ -80,26 +79,19 @@ const Login = () => {
             }
 
             .login-container {
-                position: relative;
-                display: flex;
-
                 .login-form {
-
                     .form-item {
                         margin: 20px 0;
 
                         .input-item {
-                            position: absolute;
-                            width: 240px;
-                            top: 20px;
-                            right: 20px;
+                            width: 100%;
                         }
                     }
                 }
 
                 .login-btn {
                     border-radius: 40px;
-                    width: 150px;
+                    width: 100%;
                     font-weight: 300;
                     margin-top: 10px;
                 }
@@ -139,6 +131,7 @@ const Login = () => {
             .other-login-wrapper {
                 display: flex;
                 align-items: center;
+                justify-content: center;
 
                 .other-login-item {
                     width: 60px;
