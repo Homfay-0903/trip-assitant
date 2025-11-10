@@ -56,23 +56,21 @@ const Login = () => {
 <style lang="scss" scoped>
 .box {
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100vw;
     background-color: rgb(29, 67, 89);
 
 
     .content {
-        width: 1200px;
-        height: 650px;
-        align-items: center;
-        justify-content: center;
-        background-image: url('@/assets/images/login_pc.jpg');
-        background-size: cover;
+        //width: 1200px;
+        //height: 650px;
+        //align-items: center;
+        //justify-content: center;
+        //background-image: url('@/assets/images/login_pc.jpg');
+        //background-size: cover;
 
         .login-wrapper {
-            height: 100%;
-            width: 100%;
+            //height: 100%;
+            //width: 100%;
 
             h1 {
                 text-align: center;
@@ -128,10 +126,71 @@ const Login = () => {
                 }
             }
 
-            .other-login-wrapper {
-                display: flex;
-                align-items: center;
-                justify-content: center;
+        }
+    }
+}
+
+@media (min-width: 767px) {
+    .box {
+        background-color: rgb(29, 67, 89);
+
+        .content {
+            width: 85vw;
+            height: 90vh;
+            background-image: url('@/assets/images/login_pc.jpg');
+            background-size: cover;
+            position: absolute;
+            //right: 15%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 20px;
+
+            .login-wrapper {
+                width: 25vw;
+                position: absolute;
+                right: 10%;
+                top: 50%;
+                transform: translateY(-50%);
+
+                h1 {
+                    text-align: center;
+                    font-size: 45px;
+                    color: rgb(81, 100, 115);
+                    margin-bottom: 40px;
+                }
+
+                .login-container {
+                    .login-form {
+                        .form-item {
+                            margin: 20px 0;
+
+                            .input-item {
+                                height: 45px;
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    .login-btn {
+                        height: 50px;
+                        //background-color: rgb(59, 72, 89);
+                        font-size: 20px;
+                    }
+                }
+
+                .divider {
+                    .line {
+                        border-bottom: 1px solid rgb(94, 98, 101);
+                    }
+                }
+
+                .other-login-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                }
 
                 .other-login-item {
                     width: 60px;
