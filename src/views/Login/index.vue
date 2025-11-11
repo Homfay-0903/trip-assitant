@@ -9,7 +9,7 @@
                             <el-input class="input-item" v-model="loginForm.account" placeholder="使用邮箱或者手机号" />
                         </el-form-item>
                         <el-form-item class="password form-item" prop="password">
-                            <el-input class="input-item" v-model="loginForm.password" placeholder="使用邮箱或者手机号" />
+                            <el-input class="input-item" v-model="loginForm.password" placeholder="密码" />
                         </el-form-item>
                     </el-form>
                     <el-button class="login-btn" @click="Login">登 录</el-button>
@@ -61,17 +61,7 @@ const Login = () => {
 
 
     .content {
-        //width: 1200px;
-        //height: 650px;
-        //align-items: center;
-        //justify-content: center;
-        //background-image: url('@/assets/images/login_pc.jpg');
-        //background-size: cover;
-
         .login-wrapper {
-            //height: 100%;
-            //width: 100%;
-
             h1 {
                 text-align: center;
             }
@@ -126,35 +116,207 @@ const Login = () => {
                 }
             }
 
+            .other-login-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
         }
     }
 }
 
-@media (min-width: 767px) {
+//手机
+@media (max-width: 767px) {
+    .box {
+        .content {
+            height: 100vh;
+            width: 100vw;
+            background-image: url('@/assets/images/login_phone.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .login-wrapper {
+                width: 70%;
+                max-width: 400px;
+
+                h1 {
+                    font-size: 32px;
+                    color: #fff;
+                    margin-bottom: 35px;
+                }
+
+                .login-container {
+                    .login-form {
+                        .form-item {
+                            margin: 18px 0;
+
+                            .input-item {
+                                height: 48px;
+
+                                :deep(.el-input__wrapper) {
+                                    border-radius: 25px;
+                                    padding: 0 20px;
+                                }
+                            }
+                        }
+                    }
+
+                    .login-btn {
+                        height: 48px;
+                        font-size: 18px;
+                        margin-top: 15px;
+                    }
+                }
+
+                .divider {
+                    margin: 30px 0;
+
+                    .line {
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+                    }
+
+                    .divider-text {
+                        color: #fff;
+                        font-size: 14px;
+                    }
+                }
+
+                .other-login-item {
+                    width: 55px;
+                    height: 55px;
+                    border-radius: 18px;
+                    padding: 10px;
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(10px);
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//平板
+@media (min-width: 768px) and (max-width: 1024px) {
     .box {
         background-color: rgb(29, 67, 89);
 
         .content {
-            width: 85vw;
+            width: 90vw;
             height: 90vh;
+            max-width: 1000px;
             background-image: url('@/assets/images/login_pc.jpg');
             background-size: cover;
+            background-position: center;
             position: absolute;
-            //right: 15%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 20px;
 
             .login-wrapper {
+                width: 35vw;
+                min-width: 320px;
+                max-width: 400px;
+                position: absolute;
+                right: 8%;
+                top: 50%;
+                transform: translateY(-50%);
+
+                h1 {
+                    text-align: center;
+                    font-size: 40px;
+                    color: rgb(81, 100, 115);
+                    margin-bottom: 35px;
+                }
+
+                .login-container {
+                    .login-form {
+                        .form-item {
+                            margin: 18px 0;
+
+                            .input-item {
+                                height: 48px;
+
+                                :deep(.el-input__wrapper) {
+                                    border-radius: 25px;
+                                    padding: 0 20px;
+                                }
+                            }
+                        }
+                    }
+
+                    .login-btn {
+                        height: 50px;
+                        font-size: 18px;
+                        background-color: rgb(59, 72, 89);
+                        color: white;
+
+                        &:hover {
+                            background-color: rgb(49, 62, 79);
+                        }
+                    }
+                }
+
+                .divider {
+                    .line {
+                        border-bottom: 1px solid rgb(94, 98, 101);
+                    }
+                }
+
+                .other-login-item {
+                    width: 55px;
+                    height: 55px;
+                    border-radius: 18px;
+                    padding: 10px;
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(5px);
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//桌面
+@media (min-width: 1024px) {
+    .box {
+        .content {
+            width: 85vw;
+            height: 85vh;
+            max-width: 1400px;
+            background-image: url('@/assets/images/login_pc.jpg');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 25px;
+
+            .login-wrapper {
                 width: 25vw;
+                min-width: 350px;
+                max-width: 450px;
                 position: absolute;
                 right: 10%;
                 top: 50%;
                 transform: translateY(-50%);
 
                 h1 {
-                    text-align: center;
                     font-size: 45px;
                     color: rgb(81, 100, 115);
                     margin-bottom: 40px;
@@ -166,43 +328,51 @@ const Login = () => {
                             margin: 20px 0;
 
                             .input-item {
-                                height: 45px;
-                                width: 100%;
+                                height: 50px;
+
+                                :deep(.el-input__wrapper) {
+                                    border-radius: 25px;
+                                    padding: 0 20px;
+                                }
                             }
                         }
                     }
 
                     .login-btn {
-                        height: 50px;
-                        //background-color: rgb(59, 72, 89);
+                        height: 52px;
                         font-size: 20px;
+                        background-color: rgb(59, 72, 89);
+                        color: white;
+                        transition: all 0.3s ease;
+
+                        &:hover {
+                            background-color: rgb(49, 62, 79);
+                            transform: translateY(-2px);
+                        }
                     }
                 }
 
                 .divider {
-                    .line {
-                        border-bottom: 1px solid rgb(94, 98, 101);
-                    }
-                }
-
-                .other-login-wrapper {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-
+                    margin: 25px 0;
                 }
 
                 .other-login-item {
                     width: 60px;
                     height: 60px;
                     border-radius: 20px;
-                    padding: 10px;
-                }
+                    padding: 12px;
+                    transition: all 0.3s ease;
 
-                .other-login-item img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
+                    &:hover {
+                        transform: translateY(-2px);
+                        background: rgba(255, 255, 255, 0.2);
+                    }
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
                 }
             }
         }
