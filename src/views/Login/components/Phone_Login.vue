@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogPhoneVisible" title="手机验证码登录" class="Phone-dialog">
+    <el-dialog v-model="dialogPhoneVisible" title="手机验证码登录" class="Phone-dialog" align-center>
         <el-form :model="PhoneForm" class="Phone-form">
             <el-form-item class="userPhone form-item" prop="PhoneNumber">
                 <el-input class="input-item" v-model="PhoneForm.PhoneNumber" placeholder="输入手机号">
@@ -284,7 +284,6 @@ defineExpose({
     .Phone-dialog {
         width: 90% !important;
         max-width: 400px;
-        margin-top: 50%;
 
         .el-dialog__header {
             padding: 15px 15px 5px;
@@ -309,7 +308,6 @@ defineExpose({
     .Phone-dialog {
         width: 70% !important;
         max-width: 500px;
-        margin-top: 50%;
 
         .el-dialog__header {
             .el-dialog__title {

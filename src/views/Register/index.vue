@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="dialogRegisterVisible" title="注册账号" class="register-dialog">
+    <el-dialog v-model="dialogRegisterVisible" title="注册账号" class="register-dialog" align-center>
         <el-form :model="RegisterForm" class="Register-form">
             <el-form-item class="username form-item" prop="account">
                 <el-input class="input-item" v-model="RegisterForm.account" placeholder="使用邮箱或者手机号">
@@ -258,7 +258,6 @@ defineExpose({
     .register-dialog {
         width: 90% !important;
         max-width: 400px;
-        margin-top: 50%;
 
         .el-dialog__header {
             padding: 15px 15px 5px;
@@ -282,7 +281,6 @@ defineExpose({
 @media (min-width: 768px) and (max-width: 1024px) {
     .register-dialog {
         width: 70% !important;
-        margin-top: 50%;
         max-width: 500px;
 
         .el-dialog__header {

@@ -35,7 +35,7 @@
                     <el-button class="other-login-item" @click="showPhoneDialog">
                         <img src="@/assets/images/Phone.png" alt="手机登录">
                     </el-button>
-                    <el-button class="other-login-item">
+                    <el-button class="other-login-item" @click="showWeChatDialog">
                         <img src="@/assets/images/WeChat.png" alt="微信登录">
                     </el-button>
                 </div>
@@ -48,6 +48,7 @@
     </div>
     <Register_Dialog ref="Register"></Register_Dialog>
     <Phone_LoginDialog ref="Phone"></Phone_LoginDialog>
+    <WeChat_LoginDialog ref="WeChat"></WeChat_LoginDialog>
 </template>
 
 <script setup>
@@ -57,6 +58,7 @@ import { useRouter } from 'vue-router';
 import { useMusicStore } from '@/stores/MusicStore';
 
 import Phone_LoginDialog from './components/Phone_Login.vue';
+import WeChat_LoginDialog from './components/WeChat_Login.vue';
 import Register_Dialog from '@/views/Register/index.vue'
 
 const MusicStore = useMusicStore()
@@ -80,6 +82,10 @@ const showRegisterDialog = () => {
 const Phone = ref()
 const showPhoneDialog = () => {
     Phone.value.openDialog()
+}
+const WeChat = ref()
+const showWeChatDialog = () => {
+    WeChat.value.openDialog()
 }
 </script>
 
