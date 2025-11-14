@@ -91,7 +91,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1016/800/600" alt="北京" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1016/800/600" alt="北京" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -105,7 +117,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1019/800/600" alt="上海" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1019/800/600" alt="上海" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -119,7 +143,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1031/800/600" alt="广州" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1031/800/600" alt="广州" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -133,7 +169,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1033/800/600" alt="深圳" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1033/800/600" alt="深圳" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -149,7 +197,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1036/800/600" alt="杭州" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1036/800/600" alt="杭州" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -163,7 +223,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1039/800/600" alt="成都" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1039/800/600" alt="成都" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -177,7 +249,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1043/800/600" alt="重庆" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1043/800/600" alt="重庆" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -191,7 +275,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1052/800/600" alt="西安" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1052/800/600" alt="西安" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -207,7 +303,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1054/800/600" alt="厦门" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1054/800/600" alt="厦门" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -221,7 +329,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1057/800/600" alt="青岛" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1057/800/600" alt="青岛" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -235,7 +355,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1060/800/600" alt="南京" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1060/800/600" alt="南京" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -249,7 +381,19 @@
                         <el-col :span="6">
                             <div class="city-card">
                                 <div class="city-img">
-                                    <img src="https://picsum.photos/id/1063/800/600" alt="武汉" class="city-pic">
+                                    <el-image src="https://picsum.photos/id/1063/800/600" alt="武汉" class="city-pic"
+                                        lazy>
+                                        <template #placeholder>
+                                            <div class="image-slot">加载中...</div>
+                                        </template>
+                                        <template #error>
+                                            <div class="image-slot">
+                                                <el-icon>
+                                                    <Picture />
+                                                </el-icon>
+                                            </div>
+                                        </template>
+                                    </el-image>
                                     <div class="city-overlay"></div>
                                 </div>
                                 <div class="city-info">
@@ -281,7 +425,8 @@
 </template>
 
 <script setup>
-import { Position, Search } from '@element-plus/icons-vue'
+import { Position, Search, Picture, Loading } from '@element-plus/icons-vue'
+
 
 </script>
 
@@ -325,7 +470,7 @@ import { Position, Search } from '@element-plus/icons-vue'
                         margin-left: 20px;
                         font-size: 15px;
                         font-weight: 600;
-                        color: aliceblue;
+                        color: #696969;
                         cursor: pointer;
 
                         &:hover {
@@ -344,7 +489,7 @@ import { Position, Search } from '@element-plus/icons-vue'
                     margin-right: 10px;
                     font-size: 15px;
                     font-weight: 600;
-                    color: aliceblue;
+                    color: #696969;
                     cursor: pointer;
 
                     &:hover {
@@ -401,6 +546,17 @@ import { Position, Search } from '@element-plus/icons-vue'
         .HotCity {
             .city-card {
                 border-radius: 20px;
+
+                .image-slot {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    background: #f5f7fa;
+                    color: #909399;
+                    font-size: 14px;
+                }
             }
         }
     }
@@ -416,7 +572,7 @@ import { Position, Search } from '@element-plus/icons-vue'
 
         .footer-nav {
             .footer-nav-list {
-                color: aliceblue;
+                color: #696969;
                 margin: 0 40px;
                 cursor: pointer;
 
@@ -429,7 +585,7 @@ import { Position, Search } from '@element-plus/icons-vue'
         .desc {
             font-size: 12px;
             text-align: center;
-            color: aliceblue;
+            color: #696969;
         }
     }
 
