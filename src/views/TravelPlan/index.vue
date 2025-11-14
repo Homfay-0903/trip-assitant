@@ -108,7 +108,7 @@ import { Position, Search } from '@element-plus/icons-vue'
 .trip-container {
     display: flex;
     flex-direction: column;
-    background: #e8e8d8;
+    background: #F5FFFA;
     min-height: 100vh;
 
     .trip-header-wrapper {
@@ -659,6 +659,23 @@ import { Position, Search } from '@element-plus/icons-vue'
 
             }
 
+
+            .content-body {
+                margin-top: 40px;
+
+                .search {
+                    position: relative;
+
+                    :deep(.el-input__wrapper) {
+                        position: absolute;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 40%;
+                        height: 40px;
+                        border-radius: 20px;
+                    }
+                }
+            }
         }
 
         .trip-footer-wrapper {
