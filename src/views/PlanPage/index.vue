@@ -219,7 +219,6 @@ const goToHome = () => {
     router.push('/travel_plan')
 }
 
-// 使用组合式函数
 const {
     currentStep,
     totalSteps,
@@ -246,7 +245,6 @@ const {
     exportPDF
 } = useTripPlanning()
 
-// 使用组合式函数内的 `tripData` 作为单一数据源
 
 // 监听步骤变化
 watch(currentStep, (newVal) => {
