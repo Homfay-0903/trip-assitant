@@ -129,7 +129,7 @@ import Nav from '@/components/Nav/index.vue'
 import CityInfo from './components/cityInfo.vue';
 import { reactive, ref } from 'vue';
 
-import { bus } from '@/utils/mitt';
+
 
 const router = useRouter()
 
