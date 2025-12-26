@@ -278,7 +278,6 @@ onMounted(() => {
     if (route && route.query && route.query.dest) {
         forceUpdateDestination(route.query.dest)
     }
-    // 仍然保留事件总线监听以兼容其他调用方式
     bus.on('cityName', onCity)
 
     onUnmounted(() => {
