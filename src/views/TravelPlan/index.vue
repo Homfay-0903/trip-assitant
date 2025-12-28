@@ -58,11 +58,14 @@
             </div>
             <div class="content-body">
                 <div class="search">
-                    <el-input v-model="searchCity" placeholder="大家都在搜：北京">
+                    <el-input v-model="searchCity" placeholder="大家都在搜：北京" @keyup.enter="doSearch">
                         <template #prefix>
                             <el-icon>
                                 <Search />
                             </el-icon>
+                        </template>
+                        <template #suffix>
+                            <el-button size="mini" type="primary" @click="doSearch">搜索</el-button>
                         </template>
                     </el-input>
                 </div>
@@ -73,7 +76,7 @@
                 </div>
                 <div class="HotCity">
                     <el-row :gutter="30">
-                        <el-col :span="6" v-for="city in cities" :key="city.id">
+                        <el-col :span="6" v-for="city in filteredCities" :key="city.id">
                             <div class="city-card" @click="openInfo(city)">
                                 <div class="city-img">
                                     <el-image :src="city.src" :alt="city.alt" class="city-pic" lazy>
@@ -127,7 +130,7 @@ import { useRouter } from 'vue-router';
 
 import Nav from '@/components/Nav/index.vue'
 import CityInfo from './components/cityInfo.vue';
-import { reactive, ref } from 'vue';
+import { reactive, ref, computed } from 'vue';
 
 
 
@@ -141,6 +144,18 @@ const infoConfig = reactive({
 })
 
 const searchCity = ref('')
+
+const doSearch = () => {
+    searchCity.value = searchCity.value.trim()
+}
+
+const filteredCities = computed(() => {
+    const q = searchCity.value.trim()
+    if (!q) return cities
+    return cities.filter(c => {
+        return c.name.includes(q) || (c.desc && c.desc.includes(q))
+    })
+})
 
 const openInfo = (city) => {
     console.log(city)
