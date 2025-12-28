@@ -145,12 +145,14 @@ const infoConfig = reactive({
 
 const searchCity = ref('')
 
+const query = ref('')
+
 const doSearch = () => {
-    searchCity.value = searchCity.value.trim()
+    query.value = searchCity.value.trim()
 }
 
 const filteredCities = computed(() => {
-    const input = searchCity.value.trim()
+    const input = query.value.trim()
     if (!input) return cities
     return cities.filter(city => {
         return city.name.includes(input) || (city.desc && city.desc.includes(input))
