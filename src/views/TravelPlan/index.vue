@@ -150,10 +150,10 @@ const doSearch = () => {
 }
 
 const filteredCities = computed(() => {
-    const q = searchCity.value.trim()
-    if (!q) return cities
-    return cities.filter(c => {
-        return c.name.includes(q) || (c.desc && c.desc.includes(q))
+    const input = searchCity.value.trim()
+    if (!input) return cities
+    return cities.filter(city => {
+        return city.name.includes(input) || (city.desc && city.desc.includes(input))
     })
 })
 
