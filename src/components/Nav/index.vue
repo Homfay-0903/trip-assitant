@@ -10,6 +10,9 @@
                 <div class="trip-nav">
                     <span class="nav-span" @click="GoToPages('/Over_Country')">全国各地</span>
                     <span class="nav-span" @click="GoToPages('/travel_plan')">旅行助手</span>
+                    <span class="nav-span" @click="GoToPages('/my-trips')">我的行程</span>
+                    <span class="nav-span" @click="GoToPages('/travel-log/list')">游记广场</span>
+                    <span class="nav-span" @click="GoToPages('/my-favorites')">我的收藏</span>
                 </div>
             </div>
             <div class="trip-header-user-wrapper">

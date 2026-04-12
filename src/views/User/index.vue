@@ -59,19 +59,109 @@
                             <el-button @click="openSet('email')">修改邮箱</el-button>
                         </div>
                     </div>
+                    <div class="quick-actions">
+                        <el-divider>快捷入口</el-divider>
+                        <div class="action-buttons">
+                            <el-button type="primary" @click="GoToPages('/my-trips')">
+                                <el-icon>
+                                    <Location />
+                                </el-icon>
+                                我的行程
+                            </el-button>
+                            <el-button type="success" @click="GoToPages('/travel-log/create')">
+                                <el-icon>
+                                    <Edit />
+                                </el-icon>
+                                发布游记
+                            </el-button>
+                            <el-button type="warning" @click="GoToPages('/my-favorites')">
+                                <el-icon>
+                                    <Star />
+                                </el-icon>
+                                我的收藏
+                            </el-button>
+                        </div>
+                    </div>
                 </el-tab-pane>
-                <el-tab-pane label="旅行日志" name="second">Config</el-tab-pane>
-                <el-tab-pane label="出行提醒" name="third">Role</el-tab-pane>
+                <el-tab-pane label="旅行日志" name="second">
+                    <div class="travel-log-section">
+                        <div class="section-header">
+                            <h3>我的游记</h3>
+                            <el-button type="primary" @click="GoToPages('/travel-log/create')">
+                                <el-icon>
+                                    <Edit />
+                                </el-icon>
+                                发布游记
+                            </el-button>
+                        </div>
+                        <el-empty v-if="myLogs.length === 0" description="暂无游记">
+                            <el-button type="primary" @click="GoToPages('/travel-log/create')">发布第一篇游记</el-button>
+                        </el-empty>
+                        <div v-else class="log-list">
+                            <el-card v-for="log in myLogs" :key="log.id" class="log-item" @click="viewLog(log.id)">
+                                <div class="log-info">
+                                    <h4>{{ log.title }}</h4>
+                                    <p class="log-meta">
+                                        <span>{{ log.destination }}</span>
+                                        <span>{{ formatDate(log.created_at) }}</span>
+                                    </p>
+                                </div>
+                                <div class="log-stats">
+                                    <span><el-icon>
+                                            <Star />
+                                        </el-icon> {{ log.likes_count || 0 }}</span>
+                                </div>
+                            </el-card>
+                        </div>
+                        <el-button v-if="myLogs.length > 0" class="view-all-btn" @click="GoToPages('/travel-log/list')">
+                            查看全部游记
+                        </el-button>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="出行提醒" name="third">
+                    <div class="reminder-section">
+                        <div class="section-header">
+                            <h3>我的提醒</h3>
+                            <el-button type="primary" @click="showReminderDialog = true">
+                                <el-icon>
+                                    <Plus />
+                                </el-icon>
+                                创建提醒
+                            </el-button>
+                        </div>
+                        <el-empty v-if="myReminders.length === 0" description="暂无提醒">
+                            <el-button type="primary" @click="showReminderDialog = true">创建第一个提醒</el-button>
+                        </el-empty>
+                        <div v-else class="reminder-list">
+                            <el-card v-for="reminder in myReminders" :key="reminder.id" class="reminder-item">
+                                <div class="reminder-info">
+                                    <h4>{{ reminder.title }}</h4>
+                                    <p class="reminder-meta">
+                                        <span>{{ reminder.type }}</span>
+                                        <span>{{ formatDate(reminder.reminder_time) }}</span>
+                                    </p>
+                                </div>
+                                <el-tag :type="reminder.status === '已发送' ? 'success' : 'warning'">
+                                    {{ reminder.status }}
+                                </el-tag>
+                            </el-card>
+                        </div>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
         </div>
     </div>
     <SettingDialog v-model="dialogVisible" :title="dialogConfig.title" :fields="dialogConfig.fields"
         :initial-value="dialogConfig.initialValue" :rules="dialogConfig.rules" @confirm="handleConfirm">
     </SettingDialog>
+
+    <el-dialog v-model="showReminderDialog" title="创建提醒" width="600px" destroy-on-close>
+        <Reminder :trip-id="null" />
+    </el-dialog>
 </template>
 
 <script setup>
-import { Plus, Close } from '@element-plus/icons-vue'
+import { Plus, Close, Location, Edit, Star } from '@element-plus/icons-vue'
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
@@ -79,8 +169,11 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/UserStore'
 
 import { changeName, changeSex, changeEmail, changePassword, bindAccount } from '@/api/userinfo'
+import { getTravelLogList } from '@/api/travellog'
+import { getReminderList } from '@/api/reminder'
 
 import SettingDialog from '@/views/User/components/dialog/index.vue'
+import Reminder from '@/components/Reminder/index.vue'
 
 const userStore = useUserStore()
 
@@ -88,6 +181,9 @@ const router = useRouter()
 
 const activeName = ref('first')
 const isMobile = ref(false)
+const myLogs = ref([])
+const myReminders = ref([])
+const showReminderDialog = ref(false)
 
 const dialogVisible = ref(false);
 const dialogConfig = reactive({
@@ -234,6 +330,55 @@ const goToHome = () => {
     router.push('/home')
 }
 
+const GoToPages = (path) => {
+    router.push(path)
+}
+
+const viewLog = (id) => {
+    router.push(`/travel-log/list?log_id=${id}`)
+}
+
+const formatDate = (date) => {
+    if (!date) return ''
+    return new Date(date).toLocaleDateString('zh-CN')
+}
+
+const loadMyLogs = async () => {
+    if (!userStore.id) {
+        return
+    }
+
+    try {
+        const res = await getTravelLogList()
+        if (res && res.data && res.data.status === 0) {
+            myLogs.value = res.data.data.logs.slice(0, 5) || []
+        } else {
+            myLogs.value = []
+        }
+    } catch (error) {
+        console.error('加载游记失败:', error)
+        myLogs.value = []
+    }
+}
+
+const loadMyReminders = async () => {
+    if (!userStore.id) {
+        return
+    }
+
+    try {
+        const res = await getReminderList({ user_id: userStore.id })
+        if (res && res.data && res.data.status === 0) {
+            myReminders.value = res.data.data.reminders.slice(0, 5) || []
+        } else {
+            myReminders.value = []
+        }
+    } catch (error) {
+        console.error('加载提醒失败:', error)
+        myReminders.value = []
+    }
+}
+
 const checkScreenSize = () => {
     isMobile.value = window.innerWidth <= 767
 }
@@ -269,6 +414,8 @@ const beforeAvatarUpload = (rawFile) => {
 onMounted(() => {
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
+    loadMyLogs()
+    loadMyReminders()
 })
 </script>
 
@@ -403,6 +550,97 @@ onMounted(() => {
                         }
 
                     }
+                }
+            }
+
+            .quick-actions {
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid #ebeef5;
+
+                .action-buttons {
+                    display: flex;
+                    gap: 12px;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+            }
+
+            .travel-log-section,
+            .reminder-section {
+                .section-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+
+                    h3 {
+                        margin: 0;
+                        font-size: 18px;
+                        color: #303133;
+                    }
+                }
+
+                .log-list,
+                .reminder-list {
+
+                    .log-item,
+                    .reminder-item {
+                        margin-bottom: 12px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+
+                        &:hover {
+                            transform: translateX(5px);
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        }
+
+                        :deep(.el-card__body) {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding: 16px;
+                        }
+
+                        .log-info,
+                        .reminder-info {
+                            flex: 1;
+
+                            h4 {
+                                margin: 0 0 8px 0;
+                                font-size: 16px;
+                                color: #303133;
+                            }
+
+                            .log-meta,
+                            .reminder-meta {
+                                margin: 0;
+                                font-size: 14px;
+                                color: #909399;
+
+                                span {
+                                    margin-right: 12px;
+                                }
+                            }
+                        }
+
+                        .log-stats {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            color: #909399;
+                            font-size: 14px;
+
+                            .el-icon {
+                                color: #f56c6c;
+                            }
+                        }
+                    }
+                }
+
+                .view-all-btn {
+                    width: 100%;
+                    margin-top: 12px;
                 }
             }
         }
