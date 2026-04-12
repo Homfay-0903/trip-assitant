@@ -168,11 +168,11 @@ const loadLogDetail = async () => {
   loading.value = true
   try {
     const res = await getTravelLogDetail(route.params.id)
-    if (res && res.data && res.data.status === 0) {
-      logDetail.value = res.data.data.log
+    if (res && res.status === 0) {
+      logDetail.value = res.data.log
       loadRelatedLogs()
     } else {
-      ElMessage.error(res?.data?.message || '加载游记详情失败')
+      ElMessage.error(res?.message || '加载游记详情失败')
       router.push('/travel-log/list')
     }
   } catch (error) {
@@ -187,8 +187,8 @@ const loadLogDetail = async () => {
 const loadRelatedLogs = async () => {
   try {
     const res = await getTravelLogList()
-    if (res && res.data && res.data.status === 0) {
-      relatedLogs.value = (res.data.data.logs || [])
+    if (res && res.status === 0) {
+      relatedLogs.value = (res.data.logs || [])
         .filter(log =>
           log.id !== logDetail.value.id &&
           log.destination === logDetail.value.destination
@@ -206,12 +206,12 @@ const loadRelatedLogs = async () => {
 const toggleLike = async () => {
   try {
     const res = await likeTravelLog(logDetail.value.id)
-    if (res && res.data && res.data.status === 0) {
+    if (res && res.status === 0) {
       logDetail.value.is_liked = !logDetail.value.is_liked
-      logDetail.value.likes_count = res.data.data.likes_count
-      ElMessage.success(res.data.message)
+      logDetail.value.likes_count = res.data.likes_count
+      ElMessage.success(res.message)
     } else {
-      ElMessage.error(res?.data?.message || '操作失败')
+      ElMessage.error(res?.message || '操作失败')
     }
   } catch (error) {
     console.error('操作失败:', error)
@@ -239,11 +239,11 @@ const deleteLog = async () => {
     })
 
     const res = await deleteTravelLog(logDetail.value.id)
-    if (res && res.data && res.data.status === 0) {
+    if (res && res.status === 0) {
       ElMessage.success('删除成功')
       router.push('/travel-log/list')
     } else {
-      ElMessage.error(res?.data?.message || '删除失败')
+      ElMessage.error(res?.message || '删除失败')
     }
   } catch (error) {
     if (error !== 'cancel') {

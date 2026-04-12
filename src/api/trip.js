@@ -29,7 +29,13 @@ export const createTrip = (data) => {
     })
 }
 
-export const getTripList = (user_id, page = 1, page_size = 10, status = null) => {
+export const getTripList = (params) => {
+    const {
+        user_id,
+        page = 1,
+        page_size = 10,
+        status
+    } = params || {}
     return instance({
         url: '/trip/list',
         method: 'GET',

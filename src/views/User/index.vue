@@ -350,8 +350,8 @@ const loadMyLogs = async () => {
 
     try {
         const res = await getTravelLogList()
-        if (res && res.data && res.data.status === 0) {
-            myLogs.value = res.data.data.logs.slice(0, 5) || []
+        if (res && res.status === 0) {
+            myLogs.value = res.data.logs.slice(0, 5) || []
         } else {
             myLogs.value = []
         }
@@ -368,8 +368,8 @@ const loadMyReminders = async () => {
 
     try {
         const res = await getReminderList({ user_id: userStore.id })
-        if (res && res.data && res.data.status === 0) {
-            myReminders.value = res.data.data.reminders.slice(0, 5) || []
+        if (res && res.status === 0) {
+            myReminders.value = res.data.reminders.slice(0, 5) || []
         } else {
             myReminders.value = []
         }

@@ -206,8 +206,8 @@ const loadSchedules = async () => {
   loading.value = true
   try {
     const res = await getScheduleList(props.tripId)
-    if (res.data.status === 0) {
-      schedules.value = res.data.data.schedules
+    if (res.status === 0) {
+      schedules.value = res.data.schedules
     }
   } catch (error) {
     ElMessage.error('加载日程列表失败')
@@ -254,12 +254,12 @@ const submitSchedule = async () => {
           res = await createSchedule(data)
         }
 
-        if (res.data.status === 0) {
+        if (res.status === 0) {
           ElMessage.success(editingSchedule.value ? '更新成功' : '添加成功')
           dialogVisible.value = false
           loadSchedules()
         } else {
-          ElMessage.error(res.data.message)
+          ElMessage.error(res.message)
         }
       } catch (error) {
         ElMessage.error('操作失败')
@@ -279,11 +279,11 @@ const deleteSchedule = async (id) => {
     })
 
     const res = await deleteScheduleApi(id)
-    if (res.data.status === 0) {
+    if (res.status === 0) {
       ElMessage.success('删除成功')
       loadSchedules()
     } else {
-      ElMessage.error(res.data.message)
+      ElMessage.error(res.message)
     }
   } catch (error) {
     if (error !== 'cancel') {

@@ -30,16 +30,16 @@
         :class="{ 'reminder-sent': reminder.status === '已发送' }">
         <div class="reminder-content">
           <div class="reminder-icon">
-            <el-icon :size="32" :color="getTypeColor(reminder.type)">
-              <component :is="getTypeIcon(reminder.type)" />
+            <el-icon :size="32" :color="getTypeColor(reminder.reminder_type)">
+              <component :is="getTypeIcon(reminder.reminder_type)" />
             </el-icon>
           </div>
 
           <div class="reminder-info">
             <h4 class="reminder-title">{{ reminder.title }}</h4>
             <div class="reminder-meta">
-              <el-tag :type="getTypeTagType(reminder.type)" size="small">
-                {{ reminder.type }}
+              <el-tag :type="getTypeTagType(reminder.reminder_type)" size="small">
+                {{ reminder.reminder_type }}
               </el-tag>
               <span class="reminder-time">
                 <el-icon>
@@ -89,8 +89,8 @@
           <el-input v-model="reminderForm.title" placeholder="请输入提醒标题" />
         </el-form-item>
 
-        <el-form-item label="提醒类型" prop="type">
-          <el-select v-model="reminderForm.type" placeholder="请选择提醒类型">
+        <el-form-item label="提醒类型" prop="reminder_type">
+          <el-select v-model="reminderForm.reminder_type" placeholder="请选择提醒类型">
             <el-option label="出发提醒" value="出发" />
             <el-option label="酒店入住" value="住宿" />
             <el-option label="景点游览" value="景点" />
@@ -163,7 +163,7 @@ const notificationPermission = ref(false)
 
 const reminderForm = reactive({
   title: '',
-  type: '',
+  reminder_type: '',
   reminder_time: '',
   trip_id: '',
   description: ''
@@ -171,7 +171,7 @@ const reminderForm = reactive({
 
 const rules = {
   title: [{ required: true, message: '请输入提醒标题', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择提醒类型', trigger: 'change' }],
+  reminder_type: [{ required: true, message: '请选择提醒类型', trigger: 'change' }],
   reminder_time: [{ required: true, message: '请选择提醒时间', trigger: 'change' }]
 }
 
@@ -219,7 +219,7 @@ const sendNotification = (reminder) => {
   }
 
   new Notification(reminder.title, {
-    body: `${reminder.type} - ${reminder.description || '该出发了！'}`,
+    body: `${reminder.reminder_type} - ${reminder.description || '该出发了！'}`,
     icon: '/favicon.ico',
     tag: reminder.id,
     requireInteraction: true
@@ -230,8 +230,8 @@ const loadReminders = async () => {
   loading.value = true
   try {
     const res = await getReminderList({ user_id: userStore.id })
-    if (res && res.data && res.data.status === 0) {
-      reminders.value = res.data.data.reminders || []
+    if (res && res.status === 0) {
+      reminders.value = res.data.reminders || []
     } else {
       reminders.value = []
     }
@@ -247,8 +247,8 @@ const loadReminders = async () => {
 const loadTrips = async () => {
   try {
     const res = await getTripList({ user_id: userStore.id })
-    if (res && res.data && res.data.status === 0) {
-      trips.value = res.data.data.trips || []
+    if (res && res.status === 0) {
+      trips.value = res.data.trips || []
     } else {
       trips.value = []
     }
@@ -268,7 +268,7 @@ const editReminder = (reminder) => {
   editingReminder.value = reminder
   Object.assign(reminderForm, {
     title: reminder.title,
-    type: reminder.type,
+    reminder_type: reminder.reminder_type,
     reminder_time: reminder.reminder_time,
     trip_id: reminder.trip_id,
     description: reminder.description
@@ -295,12 +295,12 @@ const submitReminder = async () => {
           res = await createReminder(data)
         }
 
-        if (res && res.data && res.data.status === 0) {
+        if (res && res.status === 0) {
           ElMessage.success(editingReminder.value ? '更新成功' : '创建成功')
           dialogVisible.value = false
           loadReminders()
         } else {
-          ElMessage.error(res?.data?.message || '操作失败')
+          ElMessage.error(res?.message || '操作失败')
         }
       } catch (error) {
         console.error('操作失败:', error)
@@ -321,11 +321,11 @@ const deleteReminder = async (id) => {
     })
 
     const res = await deleteReminderApi(id)
-    if (res.data.status === 0) {
+    if (res.status === 0) {
       ElMessage.success('删除成功')
       loadReminders()
     } else {
-      ElMessage.error(res.data.message)
+      ElMessage.error(res.message)
     }
   } catch (error) {
     if (error !== 'cancel') {

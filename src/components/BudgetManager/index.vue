@@ -293,12 +293,12 @@ const submitExpense = async () => {
           res = await createExpense(data)
         }
 
-        if (res.data.status === 0) {
+        if (res.status === 0) {
           ElMessage.success(editingExpense.value ? '更新成功' : '添加成功')
           dialogVisible.value = false
           loadExpenses()
         } else {
-          ElMessage.error(res.data.message)
+          ElMessage.error(res.message)
         }
       } catch (error) {
         ElMessage.error('操作失败')
@@ -318,11 +318,11 @@ const deleteExpense = async (id) => {
     })
 
     const res = await deleteExpenseApi(id)
-    if (res.data.status === 0) {
+    if (res.status === 0) {
       ElMessage.success('删除成功')
       loadExpenses()
     } else {
-      ElMessage.error(res.data.message)
+      ElMessage.error(res.message)
     }
   } catch (error) {
     if (error !== 'cancel') {

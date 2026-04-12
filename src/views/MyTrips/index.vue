@@ -222,8 +222,8 @@ const loadTrips = async () => {
   loading.value = true
   try {
     const res = await getTripList({ user_id: userStore.id })
-    if (res && res.data && res.data.status === 0) {
-      trips.value = res.data.data.trips || []
+    if (res && res.status === 0) {
+      trips.value = res.data.trips || []
     } else {
       trips.value = []
     }
@@ -276,14 +276,15 @@ const submitTrip = async () => {
           res = await createTrip(data)
         }
 
-        if (res.data.status === 0) {
+        if (res.status === 0) {
           ElMessage.success(editingTrip.value ? '更新成功' : '创建成功')
           createDialogVisible.value = false
           loadTrips()
         } else {
-          ElMessage.error(res.data.message)
+          ElMessage.error(res.message)
         }
       } catch (error) {
+        console.error('操作失败:', error)
         ElMessage.error('操作失败')
       } finally {
         submitting.value = false
@@ -301,11 +302,11 @@ const deleteTrip = async (id) => {
     })
 
     const res = await deleteTripApi(id)
-    if (res.data.status === 0) {
+    if (res.status === 0) {
       ElMessage.success('删除成功')
       loadTrips()
     } else {
-      ElMessage.error(res.data.message)
+      ElMessage.error(res.message)
     }
   } catch (error) {
     if (error !== 'cancel') {
@@ -317,7 +318,7 @@ const deleteTrip = async (id) => {
 const shareTrip = async (id) => {
   try {
     const res = await shareTrip(id)
-    if (res.data.status === 0) {
+    if (res.status === 0) {
       ElMessage.success('分享链接已复制到剪贴板')
     }
   } catch (error) {

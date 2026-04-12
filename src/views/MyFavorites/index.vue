@@ -162,8 +162,8 @@ const loadFavorites = async () => {
   loading.value = true
   try {
     const res = await getFavoriteList({ user_id: userStore.id })
-    if (res && res.data && res.data.status === 0) {
-      favorites.value = res.data.data.favorites || []
+    if (res && res.status === 0) {
+      favorites.value = res.data.favorites || []
     } else {
       favorites.value = []
     }
@@ -183,8 +183,8 @@ const loadTrips = async () => {
 
   try {
     const res = await getTripList({ user_id: userStore.id })
-    if (res && res.data && res.data.status === 0) {
-      trips.value = res.data.data.trips || []
+    if (res && res.status === 0) {
+      trips.value = res.data.trips || []
     } else {
       trips.value = []
     }
@@ -219,11 +219,11 @@ const removeFavorite = async (id) => {
     })
 
     const res = await deleteFavorite(id)
-    if (res.data.status === 0) {
+    if (res.status === 0) {
       ElMessage.success('取消收藏成功')
       loadFavorites()
     } else {
-      ElMessage.error(res.data.message)
+      ElMessage.error(res.message)
     }
   } catch (error) {
     if (error !== 'cancel') {

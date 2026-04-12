@@ -184,8 +184,8 @@ const loadLogs = async () => {
   loading.value = true
   try {
     const res = await getTravelLogList()
-    if (res && res.data && res.data.status === 0) {
-      logs.value = res.data.data.logs || []
+    if (res && res.status === 0) {
+      logs.value = res.data.logs || []
     } else {
       logs.value = []
     }
@@ -209,14 +209,14 @@ const goToDetail = (id) => {
 const toggleLike = async (id) => {
   try {
     const res = await likeTravelLog(id)
-    if (res && res.data && res.data.status === 0) {
+    if (res && res.status === 0) {
       if (currentLog.value) {
         currentLog.value.is_liked = !currentLog.value.is_liked
-        currentLog.value.likes_count = res.data.data.likes_count
+        currentLog.value.likes_count = res.data.likes_count
       }
-      ElMessage.success(res.data.message)
+      ElMessage.success(res.message)
     } else {
-      ElMessage.error(res?.data?.message || '操作失败')
+      ElMessage.error(res?.message || '操作失败')
     }
   } catch (error) {
     console.error('操作失败:', error)

@@ -120,8 +120,8 @@ const loadTrips = async () => {
 
   try {
     const res = await getTripList({ user_id: userStore.id })
-    if (res && res.data && res.data.status === 0) {
-      trips.value = res.data.data.trips || []
+    if (res && res.status === 0) {
+      trips.value = res.data.trips || []
     } else {
       trips.value = []
     }
@@ -239,11 +239,11 @@ const submitForm = async () => {
         }
 
         const res = await createTravelLog(data)
-        if (res && res.data && res.data.status === 0) {
+        if (res && res.status === 0) {
           ElMessage.success('发布成功')
           router.push('/travel-log/list')
         } else {
-          ElMessage.error(res?.data?.message || '发布失败')
+          ElMessage.error(res?.message || '发布失败')
         }
       } catch (error) {
         console.error('发布失败:', error)

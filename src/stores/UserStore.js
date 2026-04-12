@@ -10,11 +10,9 @@ export const useUserStore = defineStore('User', () => {
     const account = ref('')
     const email = ref('')
 
-    const fetchUserInfo = async (id) => {
-        //console.log('传入的ID:', id)
-        const res = await getUserInfo(id)
-        //console.log('完整的API响应:', res) 
-        //console.log('results数据:', res.results) 
+    const fetchUserInfo = async (userId) => {
+        id.value = userId
+        const res = await getUserInfo(userId)
         if (res.status == 0) {
             imageUrl.value = res.results.image_url
             name.value = res.results.name

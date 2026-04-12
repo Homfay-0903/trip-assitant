@@ -135,10 +135,10 @@ const loadTripDetail = async () => {
   loading.value = true
   try {
     const res = await getTripDetail(tripId.value)
-    if (res && res.data && res.data.status === 0) {
-      tripDetail.value = res.data.data.trip
+    if (res && res.status === 0) {
+      tripDetail.value = res.data.trip
     } else {
-      ElMessage.error(res?.data?.message || '加载行程详情失败')
+      ElMessage.error(res?.message || '加载行程详情失败')
     }
   } catch (error) {
     console.error('加载行程详情失败:', error)
@@ -165,11 +165,11 @@ const handleDelete = async () => {
     })
 
     const res = await deleteTrip(tripId.value)
-    if (res && res.data && res.data.status === 0) {
+    if (res && res.status === 0) {
       ElMessage.success('删除成功')
       router.push('/my-trips')
     } else {
-      ElMessage.error(res?.data?.message || '删除失败')
+      ElMessage.error(res?.message || '删除失败')
     }
   } catch (error) {
     if (error !== 'cancel') {
