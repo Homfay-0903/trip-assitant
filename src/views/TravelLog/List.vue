@@ -166,8 +166,8 @@ const filteredLogs = computed(() => {
   if (searchKeyword.value) {
     const keyword = searchKeyword.value.toLowerCase()
     result = result.filter(log =>
-      log.title.toLowerCase().includes(keyword) ||
-      log.destination.toLowerCase().includes(keyword)
+      log.title.toLowerCase().includes(keyword)
+      //log.destination.toLowerCase().includes(keyword)
     )
   }
 

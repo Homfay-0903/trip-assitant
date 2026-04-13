@@ -27,7 +27,7 @@
 
     <div v-else class="reminder-list">
       <el-card v-for="reminder in reminders" :key="reminder.id" class="reminder-card"
-        :class="{ 'reminder-sent': reminder.status === '已发送' }">
+        :class="{ 'reminder-sent': reminder.is_sent === 1 }">
         <div class="reminder-content">
           <div class="reminder-icon">
             <el-icon :size="32" :color="getTypeColor(reminder.reminder_type)">
@@ -54,8 +54,8 @@
           </div>
 
           <div class="reminder-status">
-            <el-tag :type="reminder.status === '已发送' ? 'success' : 'warning'">
-              {{ reminder.status }}
+            <el-tag :type="reminder.is_sent === 1 ? 'success' : 'warning'">
+              {{ reminder.is_sent === 1 ? '已发送' : '待发送' }}
             </el-tag>
           </div>
         </div>
@@ -73,7 +73,7 @@
             </el-icon>
             删除
           </el-button>
-          <el-button v-if="reminder.status === '待发送'" text type="success" @click="sendNow(reminder)">
+          <el-button v-if="reminder.is_sent === 0" text type="success" @click="sendNow(reminder)">
             <el-icon>
               <Bell />
             </el-icon>
@@ -138,7 +138,6 @@ import {
   Van,
   House,
   Location,
-  Food,
   ForkSpoon,
   MoreFilled
 } from '@element-plus/icons-vue'
@@ -240,7 +239,7 @@ const loadTrips = async () => {
   try {
     const res = await getTripList({ user_id: userStore.id })
     if (res && res.status === 0) {
-      trips.value = res.data.trips || []
+      trips.value = res.data.list || []
     } else {
       trips.value = []
     }
@@ -326,9 +325,16 @@ const deleteReminder = async (id) => {
   }
 }
 
-const sendNow = (reminder) => {
+const sendNow = async (reminder) => {
   sendNotification(reminder)
-  ElMessage.success('提醒已发送')
+  try {
+    await updateReminder(reminder.id, { is_sent: 1 })
+    ElMessage.success('提醒已发送')
+    loadReminders()
+  } catch (error) {
+    console.error('更新提醒状态失败:', error)
+    ElMessage.error('更新提醒状态失败')
+  }
 }
 
 const resetForm = () => {
@@ -394,16 +400,22 @@ const getTypeTagType = (type) => {
 
 let checkInterval = null
 
-const checkReminders = () => {
+const checkReminders = async () => {
   const now = new Date()
-  reminders.value.forEach(reminder => {
-    if (reminder.status === '待发送') {
+  for (const reminder of reminders.value) {
+    if (reminder.is_sent === 0) {
       const reminderTime = new Date(reminder.reminder_time)
       if (reminderTime <= now) {
         sendNotification(reminder)
+        try {
+          await updateReminder(reminder.id, { is_sent: 1 })
+          loadReminders()
+        } catch (error) {
+          console.error('更新提醒状态失败:', error)
+        }
       }
     }
-  })
+  }
 }
 
 onMounted(() => {

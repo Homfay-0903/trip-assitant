@@ -121,7 +121,7 @@ const loadTrips = async () => {
   try {
     const res = await getTripList({ user_id: userStore.id })
     if (res && res.status === 0) {
-      trips.value = res.data.trips || []
+      trips.value = res.data.list || []
     } else {
       trips.value = []
     }
