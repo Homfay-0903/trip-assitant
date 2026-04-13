@@ -139,6 +139,7 @@ import {
   House,
   Location,
   Food,
+  ForkSpoon,
   MoreFilled
 } from '@element-plus/icons-vue'
 import {
@@ -208,15 +209,6 @@ const checkNotificationPermission = () => {
 
 const sendNotification = (reminder) => {
   if (!notificationPermission.value) return
-
-  const iconMap = {
-    '出发': Van,
-    '住宿': House,
-    '景点': Location,
-    '餐饮': Food,
-    '交通': Van,
-    '其他': MoreFilled
-  }
 
   new Notification(reminder.title, {
     body: `${reminder.reminder_type} - ${reminder.description || '该出发了！'}`,
@@ -369,7 +361,7 @@ const getTypeIcon = (type) => {
     '出发': Van,
     '住宿': House,
     '景点': Location,
-    '餐饮': Fork,
+    '餐饮': ForkSpoon,
     '交通': Van,
     '其他': MoreFilled
   }

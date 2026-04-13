@@ -184,8 +184,9 @@ const loadLogs = async () => {
   loading.value = true
   try {
     const res = await getTravelLogList()
+    console.log(res)
     if (res && res.status === 0) {
-      logs.value = res.data.logs || []
+      logs.value = res.data.list || []
     } else {
       logs.value = []
     }

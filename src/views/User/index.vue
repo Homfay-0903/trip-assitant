@@ -119,34 +119,7 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="出行提醒" name="third">
-                    <div class="reminder-section">
-                        <div class="section-header">
-                            <h3>我的提醒</h3>
-                            <el-button type="primary" @click="showReminderDialog = true">
-                                <el-icon>
-                                    <Plus />
-                                </el-icon>
-                                创建提醒
-                            </el-button>
-                        </div>
-                        <el-empty v-if="myReminders.length === 0" description="暂无提醒">
-                            <el-button type="primary" @click="showReminderDialog = true">创建第一个提醒</el-button>
-                        </el-empty>
-                        <div v-else class="reminder-list">
-                            <el-card v-for="reminder in myReminders" :key="reminder.id" class="reminder-item">
-                                <div class="reminder-info">
-                                    <h4>{{ reminder.title }}</h4>
-                                    <p class="reminder-meta">
-                                        <span>{{ reminder.type }}</span>
-                                        <span>{{ formatDate(reminder.reminder_time) }}</span>
-                                    </p>
-                                </div>
-                                <el-tag :type="reminder.status === '已发送' ? 'success' : 'warning'">
-                                    {{ reminder.status }}
-                                </el-tag>
-                            </el-card>
-                        </div>
-                    </div>
+                    <Reminder :trip-id="null" />
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -154,10 +127,6 @@
     <SettingDialog v-model="dialogVisible" :title="dialogConfig.title" :fields="dialogConfig.fields"
         :initial-value="dialogConfig.initialValue" :rules="dialogConfig.rules" @confirm="handleConfirm">
     </SettingDialog>
-
-    <el-dialog v-model="showReminderDialog" title="创建提醒" width="600px" destroy-on-close>
-        <Reminder :trip-id="null" />
-    </el-dialog>
 </template>
 
 <script setup>
@@ -170,7 +139,6 @@ import { useUserStore } from '@/stores/UserStore'
 
 import { changeName, changeSex, changeEmail, changePassword, bindAccount } from '@/api/userinfo'
 import { getTravelLogList } from '@/api/travellog'
-import { getReminderList } from '@/api/reminder'
 
 import SettingDialog from '@/views/User/components/dialog/index.vue'
 import Reminder from '@/components/Reminder/index.vue'
@@ -182,8 +150,6 @@ const router = useRouter()
 const activeName = ref('first')
 const isMobile = ref(false)
 const myLogs = ref([])
-const myReminders = ref([])
-const showReminderDialog = ref(false)
 
 const dialogVisible = ref(false);
 const dialogConfig = reactive({
@@ -351,31 +317,13 @@ const loadMyLogs = async () => {
     try {
         const res = await getTravelLogList()
         if (res && res.status === 0) {
-            myLogs.value = res.data.logs.slice(0, 5) || []
+            myLogs.value = res.data.list.slice(0, 5) || []
         } else {
             myLogs.value = []
         }
     } catch (error) {
         console.error('加载游记失败:', error)
         myLogs.value = []
-    }
-}
-
-const loadMyReminders = async () => {
-    if (!userStore.id) {
-        return
-    }
-
-    try {
-        const res = await getReminderList({ user_id: userStore.id })
-        if (res && res.status === 0) {
-            myReminders.value = res.data.reminders.slice(0, 5) || []
-        } else {
-            myReminders.value = []
-        }
-    } catch (error) {
-        console.error('加载提醒失败:', error)
-        myReminders.value = []
     }
 }
 
@@ -415,7 +363,6 @@ onMounted(() => {
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
     loadMyLogs()
-    loadMyReminders()
 })
 </script>
 

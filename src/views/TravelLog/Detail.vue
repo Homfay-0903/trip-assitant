@@ -169,7 +169,7 @@ const loadLogDetail = async () => {
   try {
     const res = await getTravelLogDetail(route.params.id)
     if (res && res.status === 0) {
-      logDetail.value = res.data.log
+      logDetail.value = res.data.travel_log
       loadRelatedLogs()
     } else {
       ElMessage.error(res?.message || '加载游记详情失败')
