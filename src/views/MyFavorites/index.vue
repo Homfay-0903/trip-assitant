@@ -1,74 +1,76 @@
 <template>
   <div class="my-favorites">
     <div class="header">
-      <h2>我的收藏</h2>
+      <el-page-header @back="goBack">
+        <template #content>
+          <h2>我的收藏</h2>
+        </template>
+      </el-page-header>
     </div>
 
     <div class="filter-bar">
-      <el-input
-        v-model="searchKeyword"
-        placeholder="搜索景点名称"
-        class="search-input"
-        @input="handleSearch"
-      >
+      <el-input v-model="searchKeyword" placeholder="搜索景点名称" class="search-input" @input="handleSearch">
         <template #prefix>
-          <el-icon><Search /></el-icon>
+          <el-icon>
+            <Search />
+          </el-icon>
         </template>
       </el-input>
 
       <el-select v-model="cityFilter" placeholder="按城市筛选" clearable @change="handleFilter">
-        <el-option
-          v-for="city in cities"
-          :key="city"
-          :label="city"
-          :value="city"
-        />
+        <el-option v-for="city in cities" :key="city" :label="city" :value="city" />
       </el-select>
     </div>
 
     <div class="favorites-grid" v-loading="loading">
       <el-empty v-if="filteredFavorites.length === 0" description="暂无收藏数据" />
-      
-      <el-card
-        v-for="favorite in filteredFavorites"
-        :key="favorite.id"
-        class="favorite-card"
-        :body-style="{ padding: '0px' }"
-      >
+
+      <el-card v-for="favorite in filteredFavorites" :key="favorite.id" class="favorite-card"
+        :body-style="{ padding: '0px' }">
         <div class="favorite-image">
           <img :src="getPoiImage(favorite.poi_name)" :alt="favorite.poi_name" />
           <div class="poi-type-tag">
             <el-tag size="small" type="success">{{ favorite.poi_type }}</el-tag>
           </div>
         </div>
-        
+
         <div class="favorite-content">
           <h3 class="poi-name">{{ favorite.poi_name }}</h3>
-          
+
           <div class="poi-info">
             <div class="info-item">
-              <el-icon><Location /></el-icon>
+              <el-icon>
+                <Location />
+              </el-icon>
               <span>{{ favorite.poi_address }}</span>
             </div>
-            
+
             <div class="info-item">
-              <el-icon><MapLocation /></el-icon>
+              <el-icon>
+                <MapLocation />
+              </el-icon>
               <span>{{ favorite.city }}</span>
             </div>
-            
+
             <div class="info-item">
-              <el-icon><Clock /></el-icon>
+              <el-icon>
+                <Clock />
+              </el-icon>
               <span>收藏于 {{ formatDate(favorite.created_at) }}</span>
             </div>
           </div>
 
           <div class="favorite-actions">
             <el-button type="primary" size="small" @click="addToTrip(favorite)">
-              <el-icon><Plus /></el-icon>
+              <el-icon>
+                <Plus />
+              </el-icon>
               添加到行程
             </el-button>
             <el-button type="danger" size="small" @click="removeFavorite(favorite.id)">
-              <el-icon><Delete /></el-icon>
+              <el-icon>
+                <Delete />
+              </el-icon>
               取消收藏
             </el-button>
           </div>
@@ -76,20 +78,11 @@
       </el-card>
     </div>
 
-    <el-dialog
-      v-model="tripDialogVisible"
-      title="添加到行程"
-      width="500px"
-    >
+    <el-dialog v-model="tripDialogVisible" title="添加到行程" width="500px">
       <el-form :model="tripForm" label-width="80px">
         <el-form-item label="选择行程">
           <el-select v-model="tripForm.trip_id" placeholder="请选择行程" style="width: 100%">
-            <el-option
-              v-for="trip in trips"
-              :key="trip.id"
-              :label="trip.trip_name"
-              :value="trip.id"
-            />
+            <el-option v-for="trip in trips" :key="trip.id" :label="trip.trip_name" :value="trip.id" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -116,6 +109,9 @@ import {
 import { getFavoriteList, deleteFavorite } from '@/api/favorite'
 import { getTripList } from '@/api/trip'
 import { useUserStore } from '@/stores/UserStore'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const userStore = useUserStore()
 
@@ -140,7 +136,7 @@ const filteredFavorites = computed(() => {
 
   if (searchKeyword.value) {
     const keyword = searchKeyword.value.toLowerCase()
-    result = result.filter(favorite => 
+    result = result.filter(favorite =>
       favorite.poi_name.toLowerCase().includes(keyword)
     )
   }
@@ -151,6 +147,10 @@ const filteredFavorites = computed(() => {
 
   return result
 })
+
+const goBack = () => {
+  router.back()
+}
 
 const loadFavorites = async () => {
   if (!userStore.id) {
@@ -205,7 +205,7 @@ const confirmAddToTrip = () => {
     ElMessage.warning('请选择行程')
     return
   }
-  
+
   ElMessage.success('已添加到行程')
   tripDialogVisible.value = false
 }

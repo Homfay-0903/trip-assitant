@@ -195,6 +195,7 @@
                         <div class="btn-group">
                             <el-button @click="currentStep = 1"><i class="fas fa-edit"></i> 修改</el-button>
                             <el-button @click="restartPlan"><i class="fas fa-redo"></i> 重新规划</el-button>
+                            <el-button type="success" @click="saveTrip"><i class="fas fa-plus"></i> 添加到我的行程</el-button>
                             <el-button type="primary" @click="exportPDF"><i class="fas fa-file-download"></i> 下载行程单
                                 (PDF)</el-button>
                         </div>
@@ -242,7 +243,8 @@ const {
     showMapStep,
     fetchWeatherAndPOIData,
     formatChineseDate,
-    exportPDF
+    exportPDF,
+    saveTrip
 } = useTripPlanning()
 
 

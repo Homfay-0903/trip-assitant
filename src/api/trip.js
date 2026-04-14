@@ -10,7 +10,10 @@ export const createTrip = (data) => {
         end_date,
         travelers,
         budget,
-        transport
+        transport,
+        weather_data,
+        pois_data,
+        selected_pois
     } = data
     return instance({
         url: '/trip/create',
@@ -24,7 +27,10 @@ export const createTrip = (data) => {
             end_date,
             travelers,
             budget,
-            transport
+            transport,
+            weather_data,
+            pois_data,
+            selected_pois
         }
     })
 }

@@ -1,7 +1,11 @@
 <template>
   <div class="travel-log-list">
     <div class="header">
-      <h2>游记广场</h2>
+      <el-page-header @back="goBack">
+        <template #content>
+          <h2>游记广场</h2>
+        </template>
+      </el-page-header>
       <el-button type="primary" @click="createLog">
         <el-icon>
           <Edit />
@@ -180,6 +184,10 @@ const filteredLogs = computed(() => {
   return result
 })
 
+const goBack = () => {
+  router.back()
+}
+
 const loadLogs = async () => {
   loading.value = true
   try {
@@ -242,6 +250,7 @@ const formatDate = (date) => {
 
 const parseTags = (tags) => {
   if (!tags) return []
+  if (Array.isArray(tags)) return tags
   try {
     return JSON.parse(tags)
   } catch {

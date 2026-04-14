@@ -4,6 +4,8 @@ import {
     getDistance, showNotification, getTripDays
 } from '@/views/PlanPage/Methods/tripUtils'
 import { getLocation, fetchWeatherAndPOI } from '@/views/PlanPage/Methods/apiService'
+import { createTrip } from '@/api/trip'
+import { useUserStore } from '@/stores/UserStore'
 import { trigger } from '@vue/reactivity';
 
 export const useTripPlanning = () => {
@@ -344,6 +346,58 @@ export const useTripPlanning = () => {
         doc.save('旅行行程单.pdf')
     }
 
+    const saveTrip = async () => {
+        const userStore = useUserStore()
+
+        if (!userStore.id) {
+            showNotification('请先登录')
+            return { success: false, message: '请先登录' }
+        }
+
+        if (!tripData.destination || !tripData.startDate || !tripData.endDate) {
+            showNotification('请填写完整信息')
+            return { success: false, message: '请填写完整信息' }
+        }
+
+        const startDate = new Date(tripData.startDate)
+        const year = startDate.getFullYear()
+        const month = startDate.getMonth() + 1
+        const day = startDate.getDate()
+        const tripName = `${tripData.destination}之旅 - ${year}年${month}月${day}日`
+
+        const budgetMap = { low: 2000, medium: 5000, high: 10000 }
+        const budgetValue = budgetMap[tripData.budget] || 5000
+
+        try {
+            const res = await createTrip({
+                user_id: userStore.id,
+                trip_name: tripName,
+                origin: tripData.origin,
+                destination: tripData.destination,
+                start_date: tripData.startDate,
+                end_date: tripData.endDate,
+                travelers: tripData.travelers,
+                budget: budgetValue,
+                transport: tripData.transport,
+                weather_data: tripData.weather,
+                pois_data: tripData.pois,
+                selected_pois: tripData.selectedPOIs
+            })
+
+            if (res.status === 0) {
+                showNotification('行程保存成功！')
+                return { success: true, data: res.data }
+            } else {
+                showNotification(res.message || '保存失败')
+                return { success: false, message: res.message }
+            }
+        } catch (error) {
+            console.error('保存行程失败:', error)
+            showNotification('保存失败，请稍后重试')
+            return { success: false, message: '保存失败，请稍后重试' }
+        }
+    }
+
     return {
         currentStep,
         totalSteps,
@@ -367,6 +421,7 @@ export const useTripPlanning = () => {
         showMapStep,
         fetchWeatherAndPOIData,
         formatChineseDate,
-        exportPDF
+        exportPDF,
+        saveTrip
     }
 }

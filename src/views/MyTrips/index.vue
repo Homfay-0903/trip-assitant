@@ -1,7 +1,11 @@
 <template>
   <div class="my-trips-container">
     <div class="header">
-      <h2>我的行程</h2>
+      <el-page-header @back="goBack">
+        <template #content>
+          <h2>我的行程</h2>
+        </template>
+      </el-page-header>
       <el-button type="primary" @click="showCreateDialog">
         <el-icon>
           <Plus />
@@ -21,9 +25,10 @@
 
       <el-select v-model="statusFilter" placeholder="行程状态" @change="handleFilter">
         <el-option label="全部" value="" />
-        <el-option label="进行中" value="进行中" />
-        <el-option label="已完成" value="已完成" />
-        <el-option label="已取消" value="已取消" />
+        <el-option label="规划中" value="planning" />
+        <el-option label="进行中" value="ongoing" />
+        <el-option label="已完成" value="completed" />
+        <el-option label="已取消" value="cancelled" />
       </el-select>
     </div>
 
@@ -35,7 +40,7 @@
         <div class="trip-image">
           <img :src="getTripImage(trip.destination)" :alt="trip.trip_name" />
           <div class="trip-status" :class="getStatusClass(trip.status)">
-            {{ trip.status }}
+            {{ getStatusText(trip.status) }}
           </div>
         </div>
 
@@ -167,6 +172,20 @@ import { useUserStore } from '@/stores/UserStore'
 const router = useRouter()
 const userStore = useUserStore()
 
+const STATUS_MAP = {
+  planning: '规划中',
+  ongoing: '进行中',
+  completed: '已完成',
+  cancelled: '已取消'
+}
+
+const STATUS_CLASS_MAP = {
+  planning: 'status-planning',
+  ongoing: 'status-ongoing',
+  completed: 'status-completed',
+  cancelled: 'status-cancelled'
+}
+
 const loading = ref(false)
 const submitting = ref(false)
 const trips = ref([])
@@ -211,6 +230,10 @@ const filteredTrips = computed(() => {
 
   return result
 })
+
+const goBack = () => {
+  router.back()
+}
 
 const loadTrips = async () => {
   if (!userStore.id) {
@@ -368,12 +391,11 @@ const getTripImage = (destination) => {
 }
 
 const getStatusClass = (status) => {
-  const classMap = {
-    '进行中': 'status-ongoing',
-    '已完成': 'status-completed',
-    '已取消': 'status-cancelled'
-  }
-  return classMap[status] || ''
+  return STATUS_CLASS_MAP[status] || ''
+}
+
+const getStatusText = (status) => {
+  return STATUS_MAP[status] || status
 }
 
 onMounted(() => {
@@ -444,6 +466,10 @@ onMounted(() => {
           font-size: 12px;
           color: white;
           font-weight: 500;
+
+          &.status-planning {
+            background-color: #e6a23c;
+          }
 
           &.status-ongoing {
             background-color: #67c23a;
