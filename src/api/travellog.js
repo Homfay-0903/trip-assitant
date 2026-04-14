@@ -6,7 +6,9 @@ export const createTravelLog = (data) => {
         trip_id,
         title,
         content,
+        cover_image,
         images,
+        tags,
         is_public
     } = data
     return instance({
@@ -17,7 +19,9 @@ export const createTravelLog = (data) => {
             trip_id,
             title,
             content,
+            cover_image,
             images,
+            tags,
             is_public
         }
     })
@@ -42,23 +46,32 @@ export const getTravelLogList = (params) => {
     })
 }
 
-export const getTravelLogDetail = (id) => {
+export const getTravelLogDetail = (id, userId) => {
     return instance({
         url: `/travellog/detail/${id}`,
-        method: 'GET'
+        method: 'GET',
+        params: {
+            user_id: userId
+        }
     })
 }
 
-export const likeTravelLog = (id) => {
+export const likeTravelLog = (id, userId) => {
     return instance({
         url: `/travellog/like/${id}`,
-        method: 'POST'
+        method: 'POST',
+        data: {
+            user_id: userId
+        }
     })
 }
 
-export const deleteTravelLog = (id) => {
+export const deleteTravelLog = (id, userId) => {
     return instance({
         url: `/travellog/delete/${id}`,
-        method: 'DELETE'
+        method: 'DELETE',
+        data: {
+            user_id: userId
+        }
     })
 }

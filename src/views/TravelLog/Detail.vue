@@ -167,7 +167,7 @@ const isAuthor = computed(() => {
 const loadLogDetail = async () => {
   loading.value = true
   try {
-    const res = await getTravelLogDetail(route.params.id)
+    const res = await getTravelLogDetail(route.params.id, userStore.id)
     if (res && res.status === 0) {
       logDetail.value = res.data.travel_log
       loadRelatedLogs()
@@ -204,10 +204,14 @@ const loadRelatedLogs = async () => {
 }
 
 const toggleLike = async () => {
+  if (!userStore.id) {
+    ElMessage.warning('请先登录')
+    return
+  }
   try {
-    const res = await likeTravelLog(logDetail.value.id)
+    const res = await likeTravelLog(logDetail.value.id, userStore.id)
     if (res && res.status === 0) {
-      logDetail.value.is_liked = !logDetail.value.is_liked
+      logDetail.value.is_liked = res.data.is_liked
       logDetail.value.likes_count = res.data.likes_count
       ElMessage.success(res.message)
     } else {
@@ -231,6 +235,10 @@ const shareLog = () => {
 }
 
 const deleteLog = async () => {
+  if (!userStore.id) {
+    ElMessage.warning('请先登录')
+    return
+  }
   try {
     await ElMessageBox.confirm('确定要删除这篇游记吗？', '提示', {
       confirmButtonText: '确定',
@@ -238,7 +246,7 @@ const deleteLog = async () => {
       type: 'warning'
     })
 
-    const res = await deleteTravelLog(logDetail.value.id)
+    const res = await deleteTravelLog(logDetail.value.id, userStore.id)
     if (res && res.status === 0) {
       ElMessage.success('删除成功')
       router.push('/travel-log/list')
