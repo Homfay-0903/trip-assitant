@@ -185,7 +185,7 @@ const filteredLogs = computed(() => {
 })
 
 const goBack = () => {
-  router.back()
+  router.push('/travel_plan')
 }
 
 const loadLogs = async () => {

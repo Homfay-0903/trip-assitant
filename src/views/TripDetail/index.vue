@@ -75,7 +75,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="行程状态">
             <el-tag :type="getStatusType(tripDetail.status)">
-              {{ tripDetail.status }}
+              {{ getStatusText(tripDetail.status) }}
             </el-tag>
           </el-descriptions-item>
         </el-descriptions>
@@ -102,6 +102,8 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+
+    <TripEditDialog v-model:visible="editDialogVisible" :trip="tripDetail" @success="loadTripDetail" />
   </div>
 </template>
 
@@ -122,14 +124,30 @@ import {
 import { getTripDetail, deleteTrip } from '@/api/trip'
 import ScheduleTimeline from '@/components/ScheduleTimeline/index.vue'
 import BudgetManager from '@/components/BudgetManager/index.vue'
+import TripEditDialog from '@/components/TripEditDialog/index.vue'
 
 const route = useRoute()
 const router = useRouter()
+
+const STATUS_MAP = {
+  planning: '规划中',
+  ongoing: '进行中',
+  completed: '已完成',
+  cancelled: '已取消'
+}
+
+const STATUS_TYPE_MAP = {
+  planning: 'warning',
+  ongoing: 'success',
+  completed: 'primary',
+  cancelled: 'danger'
+}
 
 const loading = ref(false)
 const tripId = ref(route.params.id)
 const tripDetail = ref(null)
 const activeTab = ref('schedule')
+const editDialogVisible = ref(false)
 
 const loadTripDetail = async () => {
   loading.value = true
@@ -153,7 +171,7 @@ const goBack = () => {
 }
 
 const editTrip = () => {
-  router.push(`/my-trips?edit=${tripId.value}`)
+  editDialogVisible.value = true
 }
 
 const handleDelete = async () => {
@@ -196,12 +214,11 @@ const formatDate = (date) => {
 }
 
 const getStatusType = (status) => {
-  const typeMap = {
-    '进行中': 'success',
-    '已完成': 'primary',
-    '已取消': 'danger'
-  }
-  return typeMap[status] || 'info'
+  return STATUS_TYPE_MAP[status] || 'info'
+}
+
+const getStatusText = (status) => {
+  return STATUS_MAP[status] || status
 }
 
 onMounted(() => {

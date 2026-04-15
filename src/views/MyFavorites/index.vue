@@ -149,7 +149,7 @@ const filteredFavorites = computed(() => {
 })
 
 const goBack = () => {
-  router.back()
+  router.push('/travel_plan')
 }
 
 const loadFavorites = async () => {

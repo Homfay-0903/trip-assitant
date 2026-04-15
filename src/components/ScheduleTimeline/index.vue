@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <el-empty v-if="schedules.length === 0" description="暂无日程安排" />
+    <el-empty v-if="!schedules || schedules.length === 0" description="暂无日程安排" />
 
     <el-timeline v-else>
       <el-timeline-item v-for="schedule in schedules" :key="schedule.id" :timestamp="formatDate(schedule.date)"
@@ -67,7 +67,7 @@
       </el-timeline-item>
     </el-timeline>
 
-    <el-dialog v-model="dialogVisible" :title="editingSchedule ? '编辑日程' : '添加日程'" width="600px">
+    <el-dialog v-model="dialogVisible" :title="editingSchedule ? '编辑日程' : '添加日程'" width="600px" append-to-body>
       <el-form :model="scheduleForm" :rules="rules" ref="scheduleFormRef" label-width="100px">
         <el-form-item label="日期" prop="date">
           <el-date-picker v-model="scheduleForm.date" type="date" placeholder="选择日期" style="width: 100%" />
@@ -102,7 +102,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog v-model="recommendDialogVisible" title="智能推荐景点" width="800px">
+    <el-dialog v-model="recommendDialogVisible" title="智能推荐景点" width="800px" append-to-body>
       <div class="recommend-content">
         <el-alert title="推荐说明" type="info" :closable="false" style="margin-bottom: 20px">
           根据您的目的地和行程天数，为您推荐热门景点和游玩时长
@@ -206,11 +206,15 @@ const loadSchedules = async () => {
   loading.value = true
   try {
     const res = await getScheduleList(props.tripId)
-    if (res.status === 0) {
-      schedules.value = res.data.schedules
+    if (res && res.status === 0) {
+      schedules.value = res.data?.list || []
+    } else {
+      schedules.value = []
     }
   } catch (error) {
+    console.error('加载日程列表失败:', error)
     ElMessage.error('加载日程列表失败')
+    schedules.value = []
   } finally {
     loading.value = false
   }
@@ -244,6 +248,7 @@ const submitSchedule = async () => {
       try {
         const data = {
           ...scheduleForm,
+          date: formatDateForSubmit(scheduleForm.date),
           trip_id: props.tripId
         }
 
@@ -309,6 +314,15 @@ const resetForm = () => {
 const formatDate = (date) => {
   if (!date) return ''
   return new Date(date).toLocaleDateString('zh-CN')
+}
+
+const formatDateForSubmit = (date) => {
+  if (!date) return ''
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 const showRecommendDialog = () => {

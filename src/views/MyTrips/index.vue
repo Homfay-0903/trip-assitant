@@ -37,17 +37,27 @@
 
       <el-card v-for="trip in filteredTrips" :key="trip.id" class="trip-card" :body-style="{ padding: '0px' }"
         @click="goToDetail(trip.id)">
+        <!-- 图片
         <div class="trip-image">
+           
           <img :src="getTripImage(trip.destination)" :alt="trip.trip_name" />
+          
           <div class="trip-status" :class="getStatusClass(trip.status)">
             {{ getStatusText(trip.status) }}
           </div>
         </div>
+        -->
 
         <div class="trip-content">
           <h3 class="trip-title">{{ trip.trip_name }}</h3>
 
           <div class="trip-info">
+            <div class="info-item">
+              <div class="trip-status" :class="getStatusClass(trip.status)">
+                {{ getStatusText(trip.status) }}
+              </div>
+            </div>
+
             <div class="info-item">
               <el-icon>
                 <Location />
@@ -101,58 +111,12 @@
       </el-card>
     </div>
 
-    <el-dialog v-model="createDialogVisible" :title="editingTrip ? '编辑行程' : '创建新行程'" width="600px">
-      <el-form :model="tripForm" :rules="rules" ref="tripFormRef" label-width="100px">
-        <el-form-item label="行程名称" prop="trip_name">
-          <el-input v-model="tripForm.trip_name" placeholder="请输入行程名称" />
-        </el-form-item>
-
-        <el-form-item label="出发地" prop="origin">
-          <el-input v-model="tripForm.origin" placeholder="请输入出发地" />
-        </el-form-item>
-
-        <el-form-item label="目的地" prop="destination">
-          <el-input v-model="tripForm.destination" placeholder="请输入目的地" />
-        </el-form-item>
-
-        <el-form-item label="开始日期" prop="start_date">
-          <el-date-picker v-model="tripForm.start_date" type="date" placeholder="选择开始日期" style="width: 100%" />
-        </el-form-item>
-
-        <el-form-item label="结束日期" prop="end_date">
-          <el-date-picker v-model="tripForm.end_date" type="date" placeholder="选择结束日期" style="width: 100%" />
-        </el-form-item>
-
-        <el-form-item label="出行人数" prop="travelers">
-          <el-input-number v-model="tripForm.travelers" :min="1" :max="20" />
-        </el-form-item>
-
-        <el-form-item label="预算" prop="budget">
-          <el-input-number v-model="tripForm.budget" :min="0" :precision="2" />
-        </el-form-item>
-
-        <el-form-item label="交通方式" prop="transport">
-          <el-select v-model="tripForm.transport" placeholder="请选择交通方式">
-            <el-option label="飞机" value="飞机" />
-            <el-option label="火车" value="火车" />
-            <el-option label="汽车" value="汽车" />
-            <el-option label="自驾" value="自驾" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <el-button @click="createDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitTrip" :loading="submitting">
-          {{ editingTrip ? '保存' : '创建' }}
-        </el-button>
-      </template>
-    </el-dialog>
+    <TripEditDialog v-model:visible="editDialogVisible" :trip="editingTrip" @success="loadTrips" />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -166,8 +130,9 @@ import {
   Delete,
   Share
 } from '@element-plus/icons-vue'
-import { getTripList, createTrip, updateTrip, deleteTrip as deleteTripApi } from '@/api/trip'
+import { getTripList, deleteTrip as deleteTripApi } from '@/api/trip'
 import { useUserStore } from '@/stores/UserStore'
+import TripEditDialog from '@/components/TripEditDialog/index.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -187,31 +152,11 @@ const STATUS_CLASS_MAP = {
 }
 
 const loading = ref(false)
-const submitting = ref(false)
 const trips = ref([])
 const searchKeyword = ref('')
 const statusFilter = ref('')
-const createDialogVisible = ref(false)
+const editDialogVisible = ref(false)
 const editingTrip = ref(null)
-const tripFormRef = ref(null)
-
-const tripForm = reactive({
-  trip_name: '',
-  origin: '',
-  destination: '',
-  start_date: '',
-  end_date: '',
-  travelers: 1,
-  budget: 0,
-  transport: ''
-})
-
-const rules = {
-  trip_name: [{ required: true, message: '请输入行程名称', trigger: 'blur' }],
-  destination: [{ required: true, message: '请输入目的地', trigger: 'blur' }],
-  start_date: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
-  end_date: [{ required: true, message: '请选择结束日期', trigger: 'change' }]
-}
 
 const filteredTrips = computed(() => {
   let result = trips.value
@@ -232,7 +177,7 @@ const filteredTrips = computed(() => {
 })
 
 const goBack = () => {
-  router.back()
+  router.push('/travel_plan')
 }
 
 const loadTrips = async () => {
@@ -261,59 +206,12 @@ const loadTrips = async () => {
 
 const showCreateDialog = () => {
   editingTrip.value = null
-  resetForm()
-  createDialogVisible.value = true
+  editDialogVisible.value = true
 }
 
 const editTrip = (trip) => {
   editingTrip.value = trip
-  Object.assign(tripForm, {
-    trip_name: trip.trip_name,
-    origin: trip.origin,
-    destination: trip.destination,
-    start_date: trip.start_date,
-    end_date: trip.end_date,
-    travelers: trip.travelers,
-    budget: trip.budget,
-    transport: trip.transport
-  })
-  createDialogVisible.value = true
-}
-
-const submitTrip = async () => {
-  if (!tripFormRef.value) return
-
-  await tripFormRef.value.validate(async (valid) => {
-    if (valid) {
-      submitting.value = true
-      try {
-        const data = {
-          ...tripForm,
-          user_id: userStore.id
-        }
-
-        let res
-        if (editingTrip.value) {
-          res = await updateTrip(editingTrip.value.id, data)
-        } else {
-          res = await createTrip(data)
-        }
-
-        if (res.status === 0) {
-          ElMessage.success(editingTrip.value ? '更新成功' : '创建成功')
-          createDialogVisible.value = false
-          loadTrips()
-        } else {
-          ElMessage.error(res.message)
-        }
-      } catch (error) {
-        console.error('操作失败:', error)
-        ElMessage.error('操作失败')
-      } finally {
-        submitting.value = false
-      }
-    }
-  })
+  editDialogVisible.value = true
 }
 
 const deleteTrip = async (id) => {
@@ -359,36 +257,20 @@ const handleSearch = () => {
 const handleFilter = () => {
 }
 
-const resetForm = () => {
-  Object.assign(tripForm, {
-    trip_name: '',
-    origin: '',
-    destination: '',
-    start_date: '',
-    end_date: '',
-    travelers: 1,
-    budget: 0,
-    transport: ''
-  })
-  if (tripFormRef.value) {
-    tripFormRef.value.resetFields()
-  }
-}
-
 const formatDate = (date) => {
   if (!date) return ''
   return new Date(date).toLocaleDateString('zh-CN')
 }
 
-const getTripImage = (destination) => {
-  const images = {
-    '北京': 'https://picsum.photos/400/200?random=1',
-    '上海': 'https://picsum.photos/400/200?random=2',
-    '广州': 'https://picsum.photos/400/200?random=3',
-    '深圳': 'https://picsum.photos/400/200?random=4'
-  }
-  return images[destination] || 'https://picsum.photos/400/200?random=5'
-}
+//const getTripImage = (destination) => {
+//  const images = {
+//    '北京': 'https://picsum.photos/400/200?random=1',
+//    '上海': 'https://picsum.photos/400/200?random=2',
+//    '广州': 'https://picsum.photos/400/200?random=3',
+//    '深圳': 'https://picsum.photos/400/200?random=4'
+//  }
+//  return images[destination] || 'https://picsum.photos/400/200?random=5'
+//}
 
 const getStatusClass = (status) => {
   return STATUS_CLASS_MAP[status] || ''
@@ -510,6 +392,30 @@ onMounted(() => {
             .el-icon {
               margin-right: 8px;
               color: #909399;
+            }
+
+            .trip-status {
+              padding: 4px 12px;
+              border-radius: 12px;
+              font-size: 12px;
+              color: white;
+              font-weight: 500;
+
+              &.status-planning {
+                background-color: #e6a23c;
+              }
+
+              &.status-ongoing {
+                background-color: #67c23a;
+              }
+
+              &.status-completed {
+                background-color: #409eff;
+              }
+
+              &.status-cancelled {
+                background-color: #f56c6c;
+              }
             }
           }
         }

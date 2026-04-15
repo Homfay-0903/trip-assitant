@@ -3,7 +3,9 @@
     <div class="budget-header">
       <h3>预算管理</h3>
       <el-button type="primary" @click="showAddDialog">
-        <el-icon><Plus /></el-icon>
+        <el-icon>
+          <Plus />
+        </el-icon>
         记录支出
       </el-button>
     </div>
@@ -54,8 +56,8 @@
       <el-table :data="filteredExpenses" style="width: 100%">
         <el-table-column prop="category" label="分类" width="100">
           <template #default="{ row }">
-            <el-tag :type="getCategoryType(row.category)">
-              {{ row.category }}
+            <el-tag :type="getCategoryType(row.category_cn || row.category)">
+              {{ row.category_cn || row.category }}
             </el-tag>
           </template>
         </el-table-column>
@@ -73,21 +75,21 @@
         <el-table-column label="操作" width="150">
           <template #default="{ row }">
             <el-button text type="primary" @click="editExpense(row)">
-              <el-icon><Edit /></el-icon>
+              <el-icon>
+                <Edit />
+              </el-icon>
             </el-button>
             <el-button text type="danger" @click="deleteExpense(row.id)">
-              <el-icon><Delete /></el-icon>
+              <el-icon>
+                <Delete />
+              </el-icon>
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
-    <el-dialog
-      v-model="dialogVisible"
-      :title="editingExpense ? '编辑支出' : '记录支出'"
-      width="500px"
-    >
+    <el-dialog v-model="dialogVisible" :title="editingExpense ? '编辑支出' : '记录支出'" width="500px">
       <el-form :model="expenseForm" :rules="rules" ref="expenseFormRef" label-width="80px">
         <el-form-item label="分类" prop="category">
           <el-select v-model="expenseForm.category" placeholder="请选择分类">
@@ -109,12 +111,7 @@
         </el-form-item>
 
         <el-form-item label="日期" prop="expense_date">
-          <el-date-picker
-            v-model="expenseForm.expense_date"
-            type="date"
-            placeholder="选择日期"
-            style="width: 100%"
-          />
+          <el-date-picker v-model="expenseForm.expense_date" type="date" placeholder="选择日期" style="width: 100%" />
         </el-form-item>
       </el-form>
 
@@ -186,7 +183,9 @@ const remainingBudget = computed(() => {
 
 const filteredExpenses = computed(() => {
   if (!categoryFilter.value) return expenses.value
-  return expenses.value.filter(expense => expense.category === categoryFilter.value)
+  return expenses.value.filter(expense =>
+    (expense.category_cn || expense.category) === categoryFilter.value
+  )
 })
 
 const loadExpenses = async () => {
@@ -197,17 +196,21 @@ const loadExpenses = async () => {
       getExpenseStatistics(props.tripId)
     ])
 
-    if (listRes.data.status === 0) {
-      expenses.value = listRes.data.data.expenses
+    if (listRes && listRes.status === 0) {
+      expenses.value = listRes.data?.list || []
+    } else {
+      expenses.value = []
     }
 
-    if (statsRes.data.status === 0) {
-      statistics.value = statsRes.data.data.statistics
+    if (statsRes && statsRes.status === 0) {
+      statistics.value = statsRes.data || {}
       await nextTick()
       renderChart()
     }
   } catch (error) {
+    console.error('加载支出数据失败:', error)
     ElMessage.error('加载支出数据失败')
+    expenses.value = []
   } finally {
     loading.value = false
   }
@@ -222,10 +225,10 @@ const renderChart = () => {
 
   chartInstance = echarts.init(chartRef.value)
 
-  const data = statistics.value.by_category || {}
-  const chartData = Object.entries(data).map(([name, value]) => ({
-    name,
-    value
+  const categoryStats = statistics.value.category_statistics || []
+  const chartData = categoryStats.map(item => ({
+    name: item.category_cn || item.category,
+    value: item.total_amount
   }))
 
   const option = {
@@ -266,7 +269,7 @@ const showAddDialog = () => {
 const editExpense = (expense) => {
   editingExpense.value = expense
   Object.assign(expenseForm, {
-    category: expense.category,
+    category: expense.category_cn || expense.category,
     amount: expense.amount,
     description: expense.description,
     expense_date: expense.expense_date
@@ -276,13 +279,14 @@ const editExpense = (expense) => {
 
 const submitExpense = async () => {
   if (!expenseFormRef.value) return
-  
+
   await expenseFormRef.value.validate(async (valid) => {
     if (valid) {
       submitting.value = true
       try {
         const data = {
           ...expenseForm,
+          expense_date: formatDateForSubmit(expenseForm.expense_date),
           trip_id: props.tripId
         }
 
@@ -346,6 +350,15 @@ const resetForm = () => {
 const formatDate = (date) => {
   if (!date) return ''
   return new Date(date).toLocaleDateString('zh-CN')
+}
+
+const formatDateForSubmit = (date) => {
+  if (!date) return ''
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 const getCategoryType = (category) => {
