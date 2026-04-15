@@ -57,9 +57,15 @@ export const useTripPlanning = () => {
 
     const budget = computed(() => estimateBudget())
 
-    // 方法
+    const scrollToTop = () => {
+        const container = document.querySelector('.step-content')
+        if (container) {
+            container.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     const nextStep = () => {
-        // 步骤1的验证
         if (currentStep.value === 1) {
             if (!tripData.destination || !tripData.startDate || !tripData.endDate || tripData.travelers < 1) {
                 showNotification('请填写完整信息')
@@ -78,6 +84,7 @@ export const useTripPlanning = () => {
 
         if (currentStep.value < totalSteps) {
             currentStep.value++
+            scrollToTop()
         }
     }
 
@@ -276,74 +283,65 @@ export const useTripPlanning = () => {
 
 
     // PDF导出
-    const exportPDF = () => {
-        if (!window.jspdf) {
-            const script = document.createElement('script')
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
-            script.onload = () => doExportPDF()
-            document.body.appendChild(script)
-        } else {
-            doExportPDF()
+    const exportPDF = async () => {
+        try {
+            showNotification('正在生成PDF，请稍候...')
+
+            if (!window.jspdf) {
+                await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
+            }
+            if (!window.html2canvas) {
+                await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+            }
+
+            const summarySection = document.querySelector('.summary-section')
+            if (!summarySection) {
+                showNotification('无法找到内容区域')
+                return
+            }
+
+            const canvas = await window.html2canvas(summarySection, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            })
+
+            const { jsPDF } = window.jspdf
+            const imgWidth = 210
+            const imgHeight = (canvas.height * imgWidth) / canvas.width
+            const doc = new jsPDF('p', 'mm', 'a4')
+
+            const imgData = canvas.toDataURL('image/png')
+            doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+
+            if (imgHeight > 297) {
+                let remainingHeight = imgHeight - 297
+                let position = 297
+                while (remainingHeight > 0) {
+                    doc.addPage()
+                    doc.addImage(imgData, 'PNG', 0, -position, imgWidth, imgHeight)
+                    remainingHeight -= 297
+                    position += 297
+                }
+            }
+
+            doc.save('旅行行程单.pdf')
+            showNotification('PDF下载成功！')
+        } catch (error) {
+            console.error('PDF生成失败:', error)
+            showNotification('PDF生成失败，请重试')
         }
     }
 
-    const doExportPDF = () => {
-        const { jsPDF } = window.jspdf
-        const doc = new jsPDF()
-        let y = 20
-
-        doc.setFont('helvetica')
-        doc.setFontSize(20)
-        doc.text('Homfay旅行规划助手 - 行程单', 20, y)
-        y += 15
-
-        doc.setFontSize(13)
-        doc.text('出发地: ' + (tripData.origin || '--'), 20, y)
-        y += 8
-        doc.text('目的地: ' + tripData.destination, 20, y)
-        y += 8
-        doc.text('日期: ' + tripData.startDate + ' 至 ' + tripData.endDate, 20, y)
-        y += 8
-        doc.text('人数: ' + tripData.travelers + ' 人', 20, y)
-        y += 8
-        doc.text('交通方式: ' + transportText(tripData.transport), 20, y)
-        y += 8
-        doc.text('预算: ' + (tripData.budget === 'low' ? '经济型' : tripData.budget === 'high' ? '高端' : '中等'), 20, y)
-        y += 12
-
-        doc.setFontSize(15)
-        doc.text('预算估算', 20, y)
-        y += 8
-        doc.setFontSize(12)
-        doc.text('交通费用: ¥' + budget.value.transportCost, 20, y)
-        y += 7
-        doc.text('住宿费用: ¥' + budget.value.accommodationCost, 20, y)
-        y += 7
-        doc.text('景点门票: ¥' + budget.value.ticketCost, 20, y)
-        y += 7
-        doc.text('总预算: ¥' + budget.value.total, 20, y)
-        y += 12
-
-        doc.setFontSize(15)
-        doc.text('推荐景点', 20, y)
-        y += 8
-        doc.setFontSize(12)
-        if (tripData.pois && tripData.selectedPOIs.length > 0) {
-            tripData.selectedPOIs.forEach((idx, i) => {
-                const poi = tripData.pois[idx]
-                doc.text((i + 1) + '. ' + poi.name + ' - ' + (poi.address || ''), 22, y)
-                y += 7
-            })
-        } else {
-            doc.text('无', 22, y)
-            y += 7
-        }
-
-        y += 8
-        doc.setFontSize(13)
-        doc.text('感谢使用Homfay旅行规划助手！', 20, y)
-
-        doc.save('旅行行程单.pdf')
+    const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script')
+            script.src = src
+            script.onload = resolve
+            script.onerror = reject
+            document.body.appendChild(script)
+        })
     }
 
     const saveTrip = async () => {

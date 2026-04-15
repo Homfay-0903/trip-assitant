@@ -574,6 +574,44 @@ onMounted(() => {
                             background: #fff;
                             border-radius: 10px;
                             box-shadow: 0 2px 8px #e3eaf2;
+                            position: relative;
+                            overflow: hidden;
+
+                            &.selected {
+                                &::after {
+                                    content: '✓';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    background: rgba(38, 208, 206, 0.75);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 4rem;
+                                    color: #fff;
+                                    font-weight: bold;
+                                    border-radius: 10px;
+                                    z-index: 10;
+                                }
+
+                                .poi-info {
+
+                                    .poi-name,
+                                    .poi-address,
+                                    .poi-type,
+                                    .poi-rating,
+                                    .poi-ticket {
+                                        color: #1a2980;
+                                    }
+
+                                    .poi-action {
+                                        color: black;
+                                        font-weight: 600;
+                                    }
+                                }
+                            }
 
                             .poi-image {
                                 height: 120px;
@@ -866,14 +904,53 @@ onMounted(() => {
                             background: #fff;
                             border-radius: 10px;
                             box-shadow: 0 2px 8px #e3eaf2;
-                            //padding: 10px 10px 15px 10px;
                             cursor: pointer;
                             transition: all 0.3s ease;
+                            position: relative;
+                            overflow: hidden;
 
-                            &:hover,
+                            &:hover {
+                                transform: translateY(-3px);
+                                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                            }
+
                             &.selected {
                                 transform: translateY(-3px);
                                 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+                                &::after {
+                                    content: '✓';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    background: rgba(38, 208, 206, 0.75);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 5rem;
+                                    color: #fff;
+                                    font-weight: bold;
+                                    border-radius: 10px;
+                                    z-index: 10;
+                                }
+
+                                .poi-info {
+
+                                    .poi-name,
+                                    .poi-address,
+                                    .poi-type,
+                                    .poi-rating,
+                                    .poi-ticket {
+                                        color: #1a2980;
+                                    }
+
+                                    .poi-action {
+                                        color: black;
+                                        font-weight: 600;
+                                    }
+                                }
                             }
 
                             .poi-image {
@@ -1160,14 +1237,53 @@ onMounted(() => {
                             background: #fff;
                             border-radius: 10px;
                             box-shadow: 0 2px 8px #e3eaf2;
-                            //padding: 10px 10px 15px 10px;
                             cursor: pointer;
                             transition: all 0.3s ease;
+                            position: relative;
+                            overflow: hidden;
 
-                            &:hover,
+                            &:hover {
+                                transform: translateY(-3px);
+                                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                            }
+
                             &.selected {
                                 transform: translateY(-3px);
                                 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+                                &::after {
+                                    content: '✓';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    background: rgba(38, 208, 206, 0.75);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 5rem;
+                                    color: #fff;
+                                    font-weight: bold;
+                                    border-radius: 10px;
+                                    z-index: 10;
+                                }
+
+                                .poi-info {
+
+                                    .poi-name,
+                                    .poi-address,
+                                    .poi-type,
+                                    .poi-rating,
+                                    .poi-ticket {
+                                        color: #1a2980;
+                                    }
+
+                                    .poi-action {
+                                        color: black;
+                                        font-weight: 600;
+                                    }
+                                }
                             }
 
                             .poi-image {
